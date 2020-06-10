@@ -1,0 +1,55 @@
+.navbar {
+    margin-bottom: 0;
+    background: #4F4F4F;
+}
+
+body {
+    background: #ffffff;
+    color: #000000;
+    font-family: 'Microsoft JhengHei','Merriweather', sans-serif;
+}
+
+h1,
+h2 {
+    font-weight: bold;
+}
+
+p {
+    font-size: 16px;
+    color: #000000;
+}
+
+.jumbotron {
+    background: #ACD6FF;
+    color: white;
+    text-align: center;
+}
+
+.jumbotron p {
+    color: white;
+    font-size: 26px;
+}
+
+.btn-primary {
+    color: #fff;
+    margin-bottom: 5px;
+}
+.navbar-brand{
+    color: white;
+    font-size: 28px;
+}
+img,
+video,
+audio {
+    margin-top: 20px;
+    max-width: 80%;
+}
+
+div.caption {
+    text-align: center;
+    font-size: 22px;
+    clear: both;
+}
+table {
+    width: 100%;
+}
