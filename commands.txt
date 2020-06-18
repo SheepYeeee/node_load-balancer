@@ -1,3 +1,19 @@
+建立image
 docker build -t nodeapp .
+
+於docker上運行
 docker-compose up
+
+於docker上停止運行
 docker-compose down
+
+查看container nodeapp1 於docker中的ip 若127.0.0.1:8888得到status code 504 則需一個個取得ip後 去nginx.conf修改
+docker exec nodeapp1 cat /etc/hosts
+docker exec nodeapp2 cat /etc/hosts
+docker exec nodeapp3 cat /etc/hosts
+
+進入container loadbalancer的cmd
+docker exec -it loadbalancer /bin/bash
+
+查看container loadbalancer的log
+docker logs --follow loadbalancer

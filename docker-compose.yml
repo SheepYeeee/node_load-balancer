@@ -1,21 +1,133 @@
 version : '3'
 
 services:
-    lb:
-        image: haproxy
+    # lb:
+    #     container_name: lb
+    #     image: haproxy
+    #     restart: always
+    #     ports:
+    #         - "8888:8888"
+    #     volumes:
+    #         - ./haproxy:/usr/local/etc/haproxy
+    #     depends_on:
+    #         - "nodeapp3"
+
+    # nginx:
+    #     image: nginx
+    #     depends_on:
+    #       - nodeapp1
+    #       - nodeapp2
+    #       - nodeapp3
+    #     ports:
+    #       - 8888:8888
+
+    loadbalancer:
+        container_name: loadbalancer
+        build: ./load-balancer
+        tty: true
+        networks:
+            - app-network
+        links:
+            - nodeapp1
+            - nodeapp2
+            - nodeapp3
+            - db
         ports:
-            - "8080:8080"
-        volumes:
-            - ./haproxy:/usr/local/etc/haproxy
+            - '8888:8888'
+        depends_on:
+            - nodeapp1
+            - nodeapp2
+            - nodeapp3
+
     nodeapp1:
         image: nodeapp
+        container_name: nodeapp1
+        restart: always
+        env_file: .env
+        ports:
+            - "25001:25001"
         environment:
             - APPID=25001
+            - MONGO_USERNAME=$MONGO_USERNAME
+            - MONGO_PASSWORD=$MONGO_PASSWORD
+            - MONGO_HOSTNAME=db
+            - MONGO_PORT=$MONGO_PORT
+            - MONGO_DB=$MONGO_DB
+        volumes:
+            - ./app:/usr/src/app
+            - ./app/node_modules:/usr/src/app/node_modules
+        networks:
+            - app-network
+        command: ./wait-for.sh db:27017 -- /usr/src/app/node_modules/.bin/nodemon ./app/app.js
+        depends_on:
+            - "db"
+        tty: true
+        
     nodeapp2:
         image: nodeapp
+        container_name: nodeapp2
+        restart: always
+        env_file: .env
+        ports:
+            - "25002:25002"
         environment:
             - APPID=25002
+            - MONGO_USERNAME=$MONGO_USERNAME
+            - MONGO_PASSWORD=$MONGO_PASSWORD
+            - MONGO_HOSTNAME=db
+            - MONGO_PORT=$MONGO_PORT
+            - MONGO_DB=$MONGO_DB
+        volumes:
+            - ./app:/usr/src/app
+            - ./app/node_modules:/usr/src/app/node_modules
+        networks:
+            - app-network
+        command: ./wait-for.sh db:27017 -- /usr/src/app/node_modules/.bin/nodemon ./app/app.js
+        depends_on:
+            - "nodeapp1"
+        tty: true
+
     nodeapp3:
         image: nodeapp
+        container_name: nodeapp3
+        restart: always
+        env_file: .env
+        ports:
+            - "25003:25003"
         environment:
             - APPID=25003
+            - MONGO_USERNAME=$MONGO_USERNAME
+            - MONGO_PASSWORD=$MONGO_PASSWORD
+            - MONGO_HOSTNAME=db
+            - MONGO_PORT=$MONGO_PORT
+            - MONGO_DB=$MONGO_DB
+        volumes:
+            - ./app:/usr/src/app
+            - ./app/node_modules:/usr/src/app/node_modules  
+        networks:
+            - app-network
+        command: ./wait-for.sh db:27017 -- /usr/src/app/node_modules/.bin/nodemon ./app/app.js
+        depends_on:
+            - "nodeapp2"  
+        tty: true
+
+    db:
+        image: mongo:4.1.8-xenial
+        container_name: db
+        restart: unless-stopped
+        env_file: .env
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+            - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD    
+        volumes:     
+        - dbdata:/data/db
+        networks:
+        - app-network  
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    dbdata:
+    node_modules:  

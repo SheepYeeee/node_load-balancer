@@ -1,15 +1,25 @@
 {
-  "name": "app",
+  "name": "nodejs-image-demo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "app": "node index.js"
+  "description": "nodejs image demo",
+  "author": "katjuell <kathleenjuell@gmail.com>",
+  "license": "MIT",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/katjuell/nodejs-image-demo.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "nodejs",
+    "bootstrap",
+    "express"
+  ],
   "dependencies": {
-    "express": "^4.17.1"
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.10"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
   }
 }
